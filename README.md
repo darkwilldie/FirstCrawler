@@ -13,7 +13,7 @@
 - 内置浏览器静默模式，减少干扰
 
 ## 环境要求
-- JDK 8+
+- JDK 11+
 - Maven
 - Chrome浏览器
 - ChromeDriver (与Chrome浏览器版本对应)
