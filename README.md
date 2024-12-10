@@ -29,7 +29,37 @@ git clone https://github.com/darkwilldie/FirstCrawler.git
 ```shell
 mvn clean install
 ```
-3. 运行程序
+3. 配置MySQL数据库
+```sql
+-- 创建数据库
+CREATE DATABASE 58tongcheng;
+-- 创建用户表
+USE 58tongcheng;
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    name VARCHAR(100),
+    role VARCHAR(20) DEFAULT 'user',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+-- 插入管理员用户
+INSERT INTO users (username, password, name, role) 
+VALUES ('admin', '111111', '管理员', 'admin');
+-- 创建招聘信息表
+CREATE TABLE job_info (
+id INT PRIMARY KEY AUTO_INCREMENT COMMENT '职位ID',
+title VARCHAR(100) COMMENT '职位名称',
+company VARCHAR(100) COMMENT '公司名称',
+salary VARCHAR(50) COMMENT '薪资范围',
+location VARCHAR(100) COMMENT '工作地点',
+experience VARCHAR(50) COMMENT '经验要求',
+education VARCHAR(50) COMMENT '学历要求',
+headcount INT COMMENT '招聘人数',
+publish_date VARCHAR(50) COMMENT '发布日期',
+)
+```
+4. 运行程序
 ```shell
 java -jar target/FirstCrawler.jar
 ```
@@ -70,5 +100,6 @@ FirstCrawler/
 ## 注意事项
 - 本项目的开发环境为 Windows11 JDK17.0.10 maven3.9.9 VScode
 - 使用前请确保ChromeDriver版本与本地Chrome浏览器版本匹配，或使用edge
+- 确保已正确配置Mysql数据库
 - 需要手动完成网站验证码，程序检测到验证码会进入30秒休眠
 - 建议设置适当的爬取间隔，避免对目标网站造成压力
