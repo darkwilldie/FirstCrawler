@@ -10,6 +10,17 @@ public class JobInfo {
     private String headcount;   // 招聘人数
     private String publishDate; // 发布日期
 
+    // 空构造函数
+    public JobInfo() {
+        this.title = "";
+        this.company = "";
+        this.salary = "";
+        this.location = "";
+        this.experience = "";
+        this.education = "";
+        this.headcount = "";
+        this.publishDate = "";
+    }
     // 构造函数
     public JobInfo(String title, String company, String salary, String location, 
                   String experience, String education, String headcount, String publishDate) {

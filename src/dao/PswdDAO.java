@@ -1,11 +1,11 @@
-package view;
+package dao;
 
 import javax.swing.*;
 import java.awt.*;
-import tools.DBUtil;
+import tools.JDBCTools;
 import vo.User;
 
-public class ChangePasswordDialog extends JDialog {
+public class PswdDAO extends JDialog {
     private JPasswordField oldPasswordField;
     private JPasswordField newPasswordField;
     private JPasswordField confirmPasswordField;
@@ -13,7 +13,7 @@ public class ChangePasswordDialog extends JDialog {
     private JButton cancelButton;
     private User currentUser;
 
-    public ChangePasswordDialog(JFrame parent, User user) {
+    public PswdDAO(JFrame parent, User user) {
         super(parent, "修改密码", true);
         this.currentUser = user;
         
@@ -66,7 +66,7 @@ public class ChangePasswordDialog extends JDialog {
         }
         
         // 更新密码
-        if (DBUtil.updatePassword(currentUser.getUserName(), oldPassword, newPassword)) {
+        if (JDBCTools.updatePassword(currentUser.getUserName(), oldPassword, newPassword)) {
             JOptionPane.showMessageDialog(this, "密码修改成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
             dispose();
         } else {

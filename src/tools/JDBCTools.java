@@ -6,9 +6,9 @@ import java.util.List;
 import vo.JobInfo;
 import vo.User;
 
-public class DBUtil {
+public class JDBCTools {
     // 数据库连接信息
-    private static final String URL = "jdbc:mysql://localhost:3306/58tongcheng?useUnicode=true&characterEncoding=utf8";
+    private static final String URL = "jdbc:mysql://localhost:3306/58tongcheng?useUnicode=true&characterEncoding=utf8&useSSL=false";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "123456";
     
@@ -132,6 +132,35 @@ public class DBUtil {
             
         } catch (SQLException e) {
             System.out.println("修改密码失败：" + e.getMessage());
+            return false;
+        }
+    }
+    
+    public static boolean registerUser(String userName, String password, String name) {
+        // 首先检查用户名是否已存在
+        String checkSql = "SELECT COUNT(*) FROM users WHERE username = ?";
+        String insertSql = "INSERT INTO users (username, password, name, role) VALUES (?, ?, ?, 'user')";
+        
+        try (Connection conn = getConnection();
+             PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+            
+            checkStmt.setString(1, userName);
+            try (ResultSet rs = checkStmt.executeQuery()) {
+                if (rs.next() && rs.getInt(1) > 0) {
+                    return false; // 用户名已存在
+                }
+            }
+            
+            // 用户名不存在，执行注册
+            try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+                insertStmt.setString(1, userName);
+                insertStmt.setString(2, password);
+                insertStmt.setString(3, name);
+                
+                return insertStmt.executeUpdate() > 0;
+            }
+        } catch (SQLException e) {
+            System.out.println("注册用户失败：" + e.getMessage());
             return false;
         }
     }

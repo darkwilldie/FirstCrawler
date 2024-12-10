@@ -3,7 +3,7 @@ package view;
 import javax.swing.*;
 import java.awt.*;
 import vo.User;
-import tools.DBUtil;
+import tools.JDBCTools;
 
 public class LoginUI extends JFrame {
     private JTextField userNameField;
@@ -56,7 +56,7 @@ public class LoginUI extends JFrame {
         }
         
         // 验证用户
-        User user = DBUtil.validateUser(userName, password);
+        User user = JDBCTools.validateUser(userName, password);
         if (user != null) {
             JOptionPane.showMessageDialog(this,
                 "登录成功！\n欢迎回来，" + user.getName(),
@@ -73,11 +73,63 @@ public class LoginUI extends JFrame {
     }
     
     private void register() {
-        // TODO: 实现注册逻辑
-        JOptionPane.showMessageDialog(this, 
-            "注册功能待实现", 
-            "提示", 
-            JOptionPane.INFORMATION_MESSAGE);
+        // 创建注册对话框
+        JDialog dialog = new JDialog(this, "用户注册", true);
+        dialog.setSize(300, 200);
+        dialog.setLocationRelativeTo(this);
+        
+        JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        JTextField userNameField = new JTextField();
+        JPasswordField passwordField = new JPasswordField();
+        JPasswordField confirmPasswordField = new JPasswordField();
+        JTextField nameField = new JTextField();
+        
+        panel.add(new JLabel("用户名:"));
+        panel.add(userNameField);
+        panel.add(new JLabel("密码:"));
+        panel.add(passwordField);
+        panel.add(new JLabel("确认密码:"));
+        panel.add(confirmPasswordField);
+        panel.add(new JLabel("姓名:"));
+        panel.add(nameField);
+        
+        JButton confirmButton = new JButton("确认注册");
+        confirmButton.addActionListener(e -> {
+            String userName = userNameField.getText().trim();
+            String password = new String(passwordField.getPassword()).trim();
+            String confirmPassword = new String(confirmPasswordField.getPassword()).trim();
+            String name = nameField.getText().trim();
+            
+            // 输入验证
+            if (userName.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || name.isEmpty()) {
+                JOptionPane.showMessageDialog(dialog, "所有字段都不能为空！", "错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            if (!password.equals(confirmPassword)) {
+                JOptionPane.showMessageDialog(dialog, "两次输入的密码不一致！", "错误", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // 执行注册
+            if (JDBCTools.registerUser(userName, password, name)) {
+                JOptionPane.showMessageDialog(dialog, "注册成功！", "提示", JOptionPane.INFORMATION_MESSAGE);
+                dialog.dispose();
+            } else {
+                JOptionPane.showMessageDialog(dialog, "注册失败，用户名可能已存在！", "错误", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(confirmButton);
+        
+        dialog.setLayout(new BorderLayout());
+        dialog.add(panel, BorderLayout.CENTER);
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+        
+        dialog.setVisible(true);
     }
 
     // 登录成功的回调方法，可以被子类重写

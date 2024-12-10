@@ -9,6 +9,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 public class Test {
 
 	public static void main(String[] args) {
+		System.setProperty("webdriver.chrome.silentOutput", "true");
+		java.util.logging.Logger.getLogger("org.openqa.selenium").setLevel(java.util.logging.Level.OFF);
+		
 		WebDriver driver = new ChromeDriver();    //Chrome浏览器
 //		WebDriver driver = new FirefoxDriver();   //Firefox浏览器
 //		WebDriver driver = new InternetExplorerDriver();  // Internet Explorer浏览器
