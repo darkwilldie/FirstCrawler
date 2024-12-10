@@ -16,8 +16,8 @@ public class Main {
                         currentUser = user; // 保存登录用户
                         this.dispose(); // 关闭登录窗口
 
-                        // 登录成功后打开爬虫测试界面
-                        TestUI testUI = new TestUI();
+                        // 登录成功后打开操作界面
+                        OprationUI testUI = new OprationUI();
                         testUI.setVisible(true);
                     }
                 };

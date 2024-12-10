@@ -1,9 +1,9 @@
 package view;
 
 import javax.swing.*;
+import dao.UserDAO;
 import java.awt.*;
 import vo.User;
-import tools.JDBCTools;
 
 public class LoginUI extends JFrame {
     private JTextField userNameField;
@@ -56,7 +56,7 @@ public class LoginUI extends JFrame {
         }
         
         // 验证用户
-        User user = JDBCTools.validateUser(userName, password);
+        User user = UserDAO.validateUser(userName, password);
         if (user != null) {
             JOptionPane.showMessageDialog(this,
                 "登录成功！\n欢迎回来，" + user.getName(),
@@ -114,7 +114,7 @@ public class LoginUI extends JFrame {
             }
             
             // 执行注册
-            if (JDBCTools.registerUser(userName, password, name)) {
+            if (UserDAO.registerUser(userName, password, name)) {
                 JOptionPane.showMessageDialog(dialog, "注册成功！", "提示", JOptionPane.INFORMATION_MESSAGE);
                 dialog.dispose();
             } else {

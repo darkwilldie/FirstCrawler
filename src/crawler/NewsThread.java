@@ -66,7 +66,7 @@ public class NewsThread implements Runnable {
 				String click = getClick(arr[2]); // 获取点击数
 				String fabushijian = arr[3].substring(arr[3].indexOf("：") + 1); // 发布时间
 				String shengao = arr[4].substring(arr[4].indexOf("：") + 1); // 审稿
-				String newsContent = secondDoc.select("#vsb_content_2").text();  //新闻内容
+				// String newsContent = secondDoc.select("#vsb_content_2").text();  //新闻内容
 				String editor = secondDoc.selectFirst(".photogr").text(); // 编辑
 				editor = editor.substring(editor.indexOf("：")+1);
 				
