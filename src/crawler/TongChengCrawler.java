@@ -12,7 +12,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 public class TongChengCrawler {
     private WebDriver driver;
@@ -20,6 +19,8 @@ public class TongChengCrawler {
     private List<JobInfo> jobInfoList = new ArrayList<>();
     
     public TongChengCrawler() {
+        // 设置系统编码为UTF-8
+        System.setProperty("file.encoding", "UTF-8");
         ChromeOptions options = new ChromeOptions();
         // options.addArguments("--headless");  // 启用无头模式
         options.addArguments("--window-size=1920,1080");  // 设置窗口大小

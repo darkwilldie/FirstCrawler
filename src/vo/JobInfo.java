@@ -30,7 +30,6 @@ public class JobInfo {
     }
 
     // getter和setter方法
-    // ... (可以使用IDE自动生成)
     public String getTitle() {
         return title;
     }

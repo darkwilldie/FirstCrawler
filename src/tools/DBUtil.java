@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.List;
 
 import vo.JobInfo;
+import vo.User;
 
 public class DBUtil {
     // 数据库连接信息
@@ -87,6 +88,51 @@ public class DBUtil {
             if (conn != null) conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+    
+    // 添加用户验证方法
+    public static User validateUser(String userName, String password) {
+        String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+        
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, userName);
+            pstmt.setString(2, password);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return new User(
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("name"),
+                        rs.getString("role")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("用户验证失败：" + e.getMessage());
+        }
+        return null;
+    }
+    
+    public static boolean updatePassword(String userName, String oldPassword, String newPassword) {
+        String sql = "UPDATE users SET password = ? WHERE username = ? AND password = ?";
+        
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, newPassword);
+            pstmt.setString(2, userName);
+            pstmt.setString(3, oldPassword);
+            
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+            
+        } catch (SQLException e) {
+            System.out.println("修改密码失败：" + e.getMessage());
+            return false;
         }
     }
 } 

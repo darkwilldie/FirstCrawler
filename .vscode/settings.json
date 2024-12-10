@@ -1,4 +1,9 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive",
-    "java.compile.nullAnalysis.mode": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "files.encoding": "utf8",
+    "files.autoGuessEncoding": true,
+    "java.compile.nullAnalysis.mode": "disabled",
+    "[java]": {
+        "files.encoding": "utf8"
+    }
 }
