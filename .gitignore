@@ -1,4 +1,22 @@
+# Compiled class files
 target/
-*.jar
 *.class
-*.exe
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+.settings/
+.classpath
+.project
+
+# Log files
+*.log
+
+# Package files
+*.jar
+*.war
+*.ear
+
+# Other
+.DS_Store
