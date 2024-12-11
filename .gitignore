@@ -21,3 +21,4 @@ target/
 # Other
 .DS_Store
 *.csv
+*.xls

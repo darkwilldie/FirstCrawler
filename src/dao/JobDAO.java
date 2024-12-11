@@ -8,6 +8,12 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import jxl.Workbook;
+import jxl.write.*;
+import jxl.format.Alignment;
+import jxl.format.Colour;
+import java.util.ArrayList;
+import java.io.File;
 
 public class JobDAO {
     
@@ -110,10 +116,101 @@ public class JobDAO {
         }
     }
     
+    public static void exportToXLS(List<JobInfo> jobInfoList, String fileName) {
+        // 如果文件名为空，使用时间戳创建文件名
+        if (fileName == null || fileName.trim().isEmpty()) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            fileName = "job_info_" + sdf.format(new Date()) + ".xls";
+        }
+        
+        // 确保文件名以.xls结尾
+        if (!fileName.toLowerCase().endsWith(".xls")) {
+            fileName += ".xls";
+        }
+        
+        try {
+            // 创建工作簿
+            WritableWorkbook workbook = Workbook.createWorkbook(new File(fileName));
+            // 创建工作表
+            WritableSheet sheet = workbook.createSheet("职位信息", 0);
+            
+            // 创建标题样式
+            WritableFont titleFont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD);
+            WritableCellFormat titleFormat = new WritableCellFormat(titleFont);
+            titleFormat.setAlignment(Alignment.CENTRE);
+            titleFormat.setBackground(Colour.GRAY_25);
+            
+            // 写入表头
+            String[] headers = {"职位名称", "公司名称", "月薪范围", "工作地点", "经验要求", 
+                              "学历要求", "招聘人数", "发布日期"};
+            for (int i = 0; i < headers.length; i++) {
+                sheet.addCell(new Label(i, 0, headers[i], titleFormat));
+                // 设置列宽
+                sheet.setColumnView(i, 15);
+            }
+            
+            // 创建内容样式
+            WritableCellFormat contentFormat = new WritableCellFormat();
+            contentFormat.setWrap(true); // 允许文本换行
+            
+            // 写入数据
+            for (int row = 0; row < jobInfoList.size(); row++) {
+                JobInfo job = jobInfoList.get(row);
+                int col = 0;
+                sheet.addCell(new Label(col++, row + 1, job.getTitle(), contentFormat));
+                sheet.addCell(new Label(col++, row + 1, job.getCompany(), contentFormat));
+                sheet.addCell(new Label(col++, row + 1, job.getSalary(), contentFormat));
+                sheet.addCell(new Label(col++, row + 1, job.getLocation(), contentFormat));
+                sheet.addCell(new Label(col++, row + 1, job.getExperience(), contentFormat));
+                sheet.addCell(new Label(col++, row + 1, job.getEducation(), contentFormat));
+                sheet.addCell(new Label(col++, row + 1, job.getHeadcount(), contentFormat));
+                sheet.addCell(new Label(col++, row + 1, job.getPublishDate(), contentFormat));
+            }
+            
+            // 写入文件并关闭
+            workbook.write();
+            workbook.close();
+            
+            System.out.println("数据已成功导出到：" + fileName);
+            
+        } catch (Exception e) {
+            System.out.println("导出XLS文件失败：" + e.getMessage());
+        }
+    }
+    
     private static String escapeCSV(String value) {
         if (value == null) {
             return "";
         }
         return value.replace("\"", "\"\"");
+    }
+    
+    public static List<JobInfo> getAllJobs() {
+        List<JobInfo> jobList = new ArrayList<>();
+        String sql = "SELECT * FROM job_info";
+        
+        try (Connection conn = JDBCTools.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            while (rs.next()) {
+                JobInfo job = new JobInfo(
+                    rs.getString("title"),
+                    rs.getString("company"),
+                    rs.getString("salary"),
+                    rs.getString("location"),
+                    rs.getString("experience"),
+                    rs.getString("education"),
+                    String.valueOf(rs.getInt("headcount")),
+                    rs.getString("publish_date")
+                );
+                jobList.add(job);
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("查询职位信息失败：" + e.getMessage());
+        }
+        
+        return jobList;
     }
 } 

@@ -26,8 +26,8 @@ public class SeleniumTest {
         driver.findElement(By.id("kw")).sendKeys("selenium");
         // 4.获取“百度一下”按钮，进行搜索
         driver.findElement(By.id("su")).click();
-        // 5.退出浏览器
-       driver.quit();
+    //     // 5.退出浏览器
+    //    driver.quit();
 
 
 	}

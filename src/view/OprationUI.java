@@ -1,11 +1,18 @@
 package view;
 
 import javax.swing.*;
+
+import dao.JobDAO;
+
 import java.awt.*;
+import java.io.File;
+
 import test.WTUNewsCrawlerTest;
+import vo.JobInfo;
 import vo.User;
 import test.SeleniumTest;
 import test.JobCrawlerTest;
+import java.util.List;
 
 public class OprationUI extends JFrame {
     private JComboBox<String> testSelector;
@@ -16,7 +23,7 @@ public class OprationUI extends JFrame {
     public OprationUI() {
 
         setTitle("爬虫测试界面");
-        setSize(400, 100);
+        setSize(400, 150);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);  // 居中显示
         initComponents();
@@ -26,35 +33,36 @@ public class OprationUI extends JFrame {
         // 创建主面板
         JPanel mainPanel = new JPanel(new BorderLayout());
 
-        // 创建顶部控制面板
-        JPanel controlPanel = new JPanel();
-        controlPanel.putClientProperty("charset", "UTF-8");
+        // 创建顶部控制面板，使用GridLayout排成两行
+        JPanel controlPanel = new JPanel(new GridLayout(2, 1, 5, 5));
+        controlPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        // 创建第一行面板
+        JPanel firstRowPanel = new JPanel();
         String[] tests = {"58同城招聘", "武纺新闻", "selenium测试"};
         testSelector = new JComboBox<>(tests);
         runButton = new JButton("运行测试");
         stopButton = new JButton("终止测试");
-        JButton sqlButton = new JButton("执行SQL");
         
         stopButton.setEnabled(false);
         
-        controlPanel.add(testSelector);
-        controlPanel.add(runButton);
-        controlPanel.add(stopButton);
-        controlPanel.add(sqlButton);
+        firstRowPanel.add(testSelector);
+        firstRowPanel.add(runButton);
+        firstRowPanel.add(stopButton);
+
+        // 创建第二行面板
+        JPanel secondRowPanel = new JPanel();
+        JButton sqlButton = new JButton("执行SQL");
+        JButton exportCSVButton = new JButton("导出CSV");
+        JButton exportXLSButton = new JButton("导出Excel");
         
-        // 添加SQL按钮的事件监听
-        sqlButton.addActionListener(e -> {
-            // 检查用户权限
-            User currentUser = Main.getCurrentUser();
-            if (currentUser == null || "admin".equals(currentUser.getRole())) {
-                new MysqlUI(this).setVisible(true);
-            } else {
-                JOptionPane.showMessageDialog(this, 
-                    "只有管理员可以执行此操作！", 
-                    "权限错误", 
-                    JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        secondRowPanel.add(sqlButton);
+        secondRowPanel.add(exportCSVButton);
+        secondRowPanel.add(exportXLSButton);
+
+        // 将两行面板添加到控制面板
+        controlPanel.add(firstRowPanel);
+        controlPanel.add(secondRowPanel);
 
         // 添加到主面板
         mainPanel.add(controlPanel, BorderLayout.NORTH);
@@ -72,6 +80,39 @@ public class OprationUI extends JFrame {
                 System.out.println("测试已终止");
                 runButton.setEnabled(true);
                 stopButton.setEnabled(false);
+            }
+        });
+                // 添加导出CSV按钮的事件监听
+        exportCSVButton.addActionListener(e -> {
+            List<JobInfo> jobList = JobDAO.getAllJobs();
+            if (!jobList.isEmpty()) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setDialogTitle("选择保存位置");
+                fileChooser.setSelectedFile(new File("job_info.csv"));
+                
+                if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                    String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+                    JobDAO.exportToCSV(jobList, filePath);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "没有可导出的数据！", "提示", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
+        // 添加导出Excel按钮的事件监听
+        exportXLSButton.addActionListener(e -> {
+            List<JobInfo> jobList = JobDAO.getAllJobs();
+            if (!jobList.isEmpty()) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setDialogTitle("选择保存位置");
+                fileChooser.setSelectedFile(new File("job_info.xls"));
+                
+                if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                    String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+                    JobDAO.exportToXLS(jobList, filePath);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "没有可导出的���据！", "提示", JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
