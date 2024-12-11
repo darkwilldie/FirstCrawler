@@ -5,7 +5,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import tools.CSVTools;
 import vo.JobInfo;
 
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -201,7 +200,7 @@ public class JobCrawler implements Runnable{
             System.out.println("总共爬取到 " + jobInfoList.size() + " 个职位信息");
             if (jobInfoList.size() > 0) {
                 // 保存到csv文件
-                CSVTools.exportToCSV(jobInfoList, "job_info.csv");
+                JobDAO.exportToCSV(jobInfoList, "job_info.csv");
                 // 批量保存到数据库
                 JobDAO.batchSave(jobInfoList);
             }

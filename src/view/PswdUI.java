@@ -1,7 +1,9 @@
 package view;
 
 import javax.swing.*;
-import dao.PswdDAO;
+
+import dao.UserDAO;
+
 import java.awt.*;
 import vo.User;
 
@@ -66,7 +68,7 @@ public class PswdUI extends JDialog {
         }
         
         // 更新密码
-        if (PswdDAO.updatePassword(currentUser.getUserName(), oldPassword, newPassword)) {
+        if (UserDAO.updatePassword(currentUser.getUserName(), oldPassword, newPassword)) {
             JOptionPane.showMessageDialog(this, "密码修改成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
             dispose();
         } else {

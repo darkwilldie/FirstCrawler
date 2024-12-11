@@ -1,9 +1,11 @@
 package view;
 
 import javax.swing.*;
+
+import tools.JDBCTools;
+
 import java.awt.*;
 import java.sql.*;
-import dao.SqlDAO;
 
 public class MysqlUI extends JDialog {
     private JTextArea sqlArea;
@@ -59,7 +61,7 @@ public class MysqlUI extends JDialog {
     private void executeSQL() {
         try {
             String sql = sqlArea.getText();
-            String result = SqlDAO.executeSQL(sql);
+            String result = JDBCTools.executeSQL(sql);
             resultArea.setText(result);
         } catch (SQLException ex) {
             resultArea.setText("SQL执行错误：\n" + ex.getMessage());
