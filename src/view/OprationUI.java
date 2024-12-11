@@ -82,7 +82,11 @@ public class OprationUI extends JFrame {
                 stopButton.setEnabled(false);
             }
         });
-                // 添加导出CSV按钮的事件监听
+        // 添加执行SQL按钮的事件监听
+        sqlButton.addActionListener(e -> {
+            new MysqlUI(this).setVisible(true);
+        });
+        // 添加导出CSV按钮的事件监听
         exportCSVButton.addActionListener(e -> {
             List<JobInfo> jobList = JobDAO.getAllJobs();
             if (!jobList.isEmpty()) {
@@ -112,7 +116,7 @@ public class OprationUI extends JFrame {
                     JobDAO.exportToXLS(jobList, filePath);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "没有可导出的���据！", "提示", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "没有可导出的数据！", "提示", JOptionPane.INFORMATION_MESSAGE);
             }
         });
 

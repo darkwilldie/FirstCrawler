@@ -1,11 +1,9 @@
 package view;
 
 import javax.swing.*;
-
-import tools.JDBCTools;
-
 import java.awt.*;
 import java.sql.*;
+import tools.JDBCTools;
 
 public class MysqlUI extends JDialog {
     private JTextArea sqlArea;
